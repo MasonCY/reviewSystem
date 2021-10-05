@@ -35,9 +35,6 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required']);
-      
         $image_store = request()->file('image')->store('products_images','public');
         $image = new Image();
         $image->product_id= $request->pid;

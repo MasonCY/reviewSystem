@@ -6,20 +6,26 @@
 <label class="home">Home</label> 
 @endsection
 @section('follow')
-    Follow
+        @auth
+            <a class="navLink" href ="product/create"> Create </a>
+        @endauth
+ 
 @endsection
 @section('follower')
-    Follower
+      Follow
 @endsection
 @section('document')
 @endsection
 @section('body')
     <div></div>
+
     <h4 class="home_h4">Products information:</h4>
     <div class="clearfix">
             @foreach($products as $product)
+                    <?php $tid=-1;?>
                     @foreach($images as $image)
                          @if($product->id == $image->product_id)
+                            <?php $tid=$image->product_id;?>
                             <div class="img-container">
                               <figure> 
                                 
@@ -27,18 +33,26 @@
                                 <figcaption class='image_link'><a href="product/{{$product->id}}"> {{ $product->name }}</a></figcaption>    
                              </figure>
                             </div>
-
+                          
+                          @break
                             <!-- <div> </div> -->
                       
                          @endif 
                    @endforeach
-              
+                   @if($tid == -1)
+                        <div class="img-container">
+                              <figure> 
+                                
+                                <img src="//:0" style="width:300px;height:300px;">
+                                <figcaption class='image_link'><a href="product/{{$product->id}}"> {{ $product->name }}</a></figcaption>    
+                             </figure>
+                            </div>
+
+                   @endif
             @endforeach
     </div>
     
-        @auth
-            <p><a href ="product/create"> Create </a></p>
-        @endauth
+  
 
     <div class="d-flex">
       <div class="mx-auto">

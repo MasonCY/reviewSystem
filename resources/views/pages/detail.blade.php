@@ -30,8 +30,8 @@
 <h4>Phone detail:</h4>
  
 <table>
-    <tr><th>Name</th><th>Price</th><th>Make</th><th>Description</th></tr>
-    <tr><td>{{$product->name}}</td> <td> {{$product->price}}</td><td> {{$product->manufacturer}}</td><td> {{$product->description}}</td>
+    <tr><th>Name</th><th>Price</th><th>Make</th><th>Description</th><th>Url</th><th>Image</th></tr>
+    <tr><td>{{$product->name}}</td> <td> {{$product->price}}</td><td> {{$product->manufacturer}}</td><td> {{$product->description}}</td><td> {{$product->url}}</td>
     @auth
       <td><a href='{{url("add_image/$product->id/$uid")}}'>Upload</a></td>
     @endauth

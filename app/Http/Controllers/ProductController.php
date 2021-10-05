@@ -20,6 +20,7 @@ class ProductController extends Controller
         // $images = Image::groupBy('product_id')->get();
             $products = Product::orderBy('id')->paginate(6);
             $images = Image::groupBy('product_id')->orderBy('product_id')->paginate(6);
+       
 
      
         return view('pages/index')->with('products', $products)->with('images', $images);
@@ -44,13 +45,22 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        if(empty($request->url)){
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'price' => 'required|numeric|gt:0',
+                'manufacturer' =>'required |string|max:255',
+                'description' => 'required'
+        ]);
+    }else{
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'price' => 'required|numeric|gt:0',
             'manufacturer' =>'required |string|max:255',
             'description' => 'required',
             'url' => ['url']
-        ]);
+    ]);
+    }
         $product = Product::create([
             'name' => $request->name,
             'price' => $request->price,
@@ -91,6 +101,9 @@ class ProductController extends Controller
     public function edit($id)
     {
         //
+        $product = Product::find($id);
+        return view('pages/update_product_interface')->with('product', $product);
+
     }
 
     /**
@@ -103,6 +116,36 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         //
+       if(empty($request->url)){
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'price' => 'required|numeric|gt:0',
+                'manufacturer' =>'required |string|max:255',
+                'description' => 'required'
+        ]);
+    }else{
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'price' => 'required|numeric|gt:0',
+            'manufacturer' =>'required |string|max:255',
+            'description' => 'required',
+            'url' => ['url']
+    ]);
+
+    }
+        $product = Product::find($id);
+        $product->name = $request->name;
+        $product->price = $request->price;
+        $product->manufacturer = $request->manufacturer;
+        $product->description = $request->description;
+        $product->url = $request->url;
+
+        $product->save();
+        $reviews = $product->users()->paginate(5);
+        $images = $product->images;
+        $users = User::all();
+        return view('pages/detail')->with('product',$product)->with('reviews',$reviews)->with('images',$images)->with('users',$users);
+
     }
 
     /**
@@ -114,5 +157,20 @@ class ProductController extends Controller
     public function destroy($id)
     {
         //
+        $product = Product::find($id);
+        $reviews = $product->users;
+        $images = $product->images;
+
+        foreach($reviews as $review)
+        {
+            $review->delete();
+        }
+        foreach($images as $image)
+        {
+            $image->delete();
+        }
+        $product->delete();
+     return redirect(url("product"));
+
     }
 }

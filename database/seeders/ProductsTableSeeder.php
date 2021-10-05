@@ -76,6 +76,15 @@ class ProductsTableSeeder extends Seeder
         
         
         ]);
+        DB::table('products')->insert([
+            'name' => 'Galaxy S21 5G',
+            'price' => 1248,
+            'manufacturer' => 'Samsung',
+            'description' => 'Released 2020, 169g,7.9mm thickness, 2400 x 1080 pixels(6.2)',
+        
+        
+        ]);
+        
        
     }
 }
