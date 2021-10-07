@@ -16,6 +16,7 @@
 @section('follower')
 @auth
   <?php $uid = Auth::user()->id ?> 
+ 
 
   @if(Auth::user()->user_type == 'Moderator')
         <form method="post" action='{{url("product/$product->id")}}'>
@@ -58,13 +59,15 @@
     </div>
        
   <p class="reviews" style="background-color: blue; color: white;" align='center' > Reivews</p>
-  <!-- <table>
-  <tr><th>Reviewer</th><th>Review</th><th>ReviewTime</th><th>Operation</th></tr> -->
+
     @foreach($reviews as $review) 
     <?php $islike = -1; ?>
     <?php $ppid = $review->pivot->id; ?>
-        <!-- <tr><td>{{$review -> name}}</td><td>{{$review -> pivot->review}}</td><td>{{$review->pivot->create_date}}</td><td></td></tr> -->
-      <p><span class ='left'><a class="navLink" name='{{$ppid}}'>{{$review -> name}}</a> {{$review -> rating}}</span>  <span class ='right' >{{$review->pivot->create_date}}</span></p><br>
+    <?php $followed_user_id = $review->pivot->user_id ?>
+    <?php $rating = $review->pivot->rating;?>
+    <?php $filename ="images/".strval($rating).'.png'?>
+   
+      <p><span class ='left'><a class="navLink" name='{{$ppid}}'>{{$review -> name}}</a> </span> &nbsp;&nbsp;&nbsp;  <img src='{{url("$filename")}}'  style="width:140px;height:20px; margin:0px 20px;">  <span class ='right' >{{$review->pivot->create_date}}</span></p>
       <p class="dotted" style="background-color: darkgray;" >{{$review -> pivot->review}}</p>
       <p>
       @auth
@@ -96,23 +99,43 @@
       @else
          <span class='right'> <a href='{{url("store_like/$product->id/$uid/$ppid")}}'>like</a> <a href='{{url("store_dislike/$product->id/$uid/$ppid")}}'>dislike</a></span>
       @endauth
-      
-       <span class = 'left'><a href="#">Follow</a>
+      @if($review->pivot->user_id != $uid)
+          @foreach($follows as $follow)
+            <?php $followed = FALSE;?>
+            @if($follow->user_id == $uid and $follow->followed_user_id == $followed_user_id)
+              <?php $followed = TRUE ?>
+              @break
+            @endif
+          @endforeach()
+        
+        @if($followed == FALSE)
+          <span class = 'left'><a href='{{url("follow/$ppid/edit")}}'>Follow</a>
+        @else
+          <span class = 'left'>Followed
+        @endif
+      @else
+        <span class = 'left'><a href="#"></a>
+      @endif
        @auth
         @if(Auth::user()->user_type == 'Moderator')
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='{{url("review/$ppid/edit")}}'>Update</a>
-          <a href="#">Delete</a>
+          <form method="post" action='{{url("review/$ppid")}}'>
+            {{csrf_field()}}
+            {{method_field('DELETE')}}
+            <input type="submit" value="Delete" class='delete'>
+          </form>
         @elseif( $uid == $review->pivot->user_id )
-
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">Update</a>
-           <a href="#">Delete</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='{{url("review/$ppid/edit")}}'>Update</a>
+          <form method="post" action='{{url("review/$ppid")}}'>
+            {{csrf_field()}}
+            {{method_field('DELETE')}}
+            <input type="submit" value="Delete" class='delete'>
+         </form>
         @endif
       @endauth
       </span></p><br><br><br>
       
     @endforeach
-
-
   @auth
       
     @if($nonAddedReview)

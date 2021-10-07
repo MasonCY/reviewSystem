@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\FollowController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +18,7 @@ use App\Http\Controllers\ReviewController;
 Route::resource('product', ProductController::class);
 Route::resource('image', ImageController::class);
 Route::resource('review', ReviewController::class);
+Route::resource('follow', FollowController::class);
 Route::get('add_image/{pid}/{uid}', [ImageController::class, 'add_image_interface']);
 Route::get('add_review/{pid}/{uid}', [ProductController::class, 'add_review']);
 Route::post('store_review', [ProductController::class, 'store_review']);

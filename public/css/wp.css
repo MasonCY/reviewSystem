@@ -40,6 +40,11 @@ input.submit{
     background-color: transparent;
     border: none;
 }
+input.delete{
+    background-color: transparent;
+    border: none;
+    color: dodgerblue;
+}
 input.logout{
     background-color: transparent;
 }

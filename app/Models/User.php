@@ -43,9 +43,12 @@ class User extends Authenticatable
     ];
 
     function products(){
-        return $this->belongsToMany('App\Models\Product','reviews')->withPivot('id','review','create_date','likes','dislikes','added_review')->withTimestamps();
+        return $this->belongsToMany('App\Models\Product','reviews')->withPivot('id','review','create_date','likes','dislikes','added_review','rating')->withTimestamps();
     }
     function reviews(){
         return $this->belongsToMany('App\Models\Review')->withPivot('islike');
+    }
+    function follows(){
+        return $this->hasMany('App\Models\Follow');
     }
 }

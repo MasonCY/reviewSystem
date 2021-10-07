@@ -46,6 +46,7 @@
            </select></p>
         <p><label>Review: </label><textarea name="review" rows="4" cols="50" >{{$review->review}}</textarea><label></label></p>
     @endif
+    <input type="hidden" name="destination" value={{$path}}>
         <p><input type="submit" value="Update"></p>
 
 @endsection

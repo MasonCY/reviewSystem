@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Image;
 use App\Models\User;
 use App\Models\Review;
+use App\Models\Follow;
 use Illuminate\Support\Facades\Auth;
 class ProductController extends Controller
 {
@@ -25,8 +26,8 @@ class ProductController extends Controller
     
         // $products = Product::all();
         // $images = Image::groupBy('product_id')->get();
-            $products = Product::orderBy('id')->paginate(6);
-            $images = Image::groupBy('product_id')->orderBy('product_id')->paginate(6);
+            $products = Product::orderBy('created_at','desc')->paginate(6);
+            $images = Image::groupBy('product_id')->get();
        
 
      
@@ -156,8 +157,10 @@ class ProductController extends Controller
     {
         //
         $product = Product::find($id);
-        $reviews = $product->users()->orderBy('created_at','desc')->paginate(5);
+        $reviews = $product->users()->orderBy('create_date','desc')->paginate(5);
         $images = $product->images;
+        $follows = Follow::all();
+
         $users = User::all();
         if(Auth::check()){
             $user = User::find(Auth::user()->id);
@@ -172,7 +175,7 @@ class ProductController extends Controller
                 }
             }
             
-            return view('pages/detail')->with('product',$product)->with('reviews',$reviews)->with('images',$images)->with('users',$users)->with('likes',$likes)->with('nonAddedReview',$nonAddedReview);
+            return view('pages/detail')->with('product',$product)->with('reviews',$reviews)->with('images',$images)->with('users',$users)->with('likes',$likes)->with('nonAddedReview',$nonAddedReview)->with('follows',$follows);
         }
      
   
@@ -241,17 +244,9 @@ class ProductController extends Controller
     {
         //
         $product = Product::find($id);
-        $reviews = $product->users;
         $images = $product->images;
-
-        foreach($reviews as $review)
-        {
-            $review->delete();
-        }
-        foreach($images as $image)
-        {
-            $image->delete();
-        }
+        $product->users()->detach();
+        $product->images()->delete();
         $product->delete();
      return redirect(url("product"));
 

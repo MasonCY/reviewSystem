@@ -50,7 +50,7 @@
                  <input type="radio" id="member" name="user_type" value="Member">
                  <label for="member">Member</label>
                  <input type="radio" id="moderator" name="user_type" value="Moderator">
-                <label for="moderator">Moderator</label><br>
+                <label for="moderator">Moderator</label> {{$errors->first('url')}}<br> 
             </div>
 
             <div class="flex items-center justify-end mt-4">

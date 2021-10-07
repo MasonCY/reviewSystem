@@ -3,7 +3,7 @@
     products
 @endsection
 @section('home') 
-<label class="home">Home</label> 
+  <label class='home'>Home</label>
 @endsection
 @section('follow')
         @auth
@@ -12,7 +12,10 @@
  
 @endsection
 @section('follower')
-      Follow
+@auth
+  <?php $uid = Auth::user()->id?>
+  <a class="navLink" href='{{url("follow/$uid")}}'>Follow</a> 
+@endauth
 @endsection
 @section('document')
 @endsection
@@ -43,7 +46,7 @@
                         <div class="img-container">
                               <figure> 
                                 
-                                <img src="//:0" style="width:300px;height:300px;">
+                                <img src="//:0"  style="width:300px;height:300px;">
                                 <figcaption class='image_link'><a href="product/{{$product->id}}"> {{ $product->name }}</a></figcaption>    
                              </figure>
                             </div>

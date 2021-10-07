@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Review;
-
-class ReviewController extends Controller
+use App\Models\Follow;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+class FollowController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -47,6 +48,11 @@ class ReviewController extends Controller
     public function show($id)
     {
         //
+        $user = User::find($id);
+        $follows = $user->follows;
+        $users = User::all();
+        return view('pages/follow')->with('follows',$follows)->with('users',$users);
+        
     }
 
     /**
@@ -58,9 +64,14 @@ class ReviewController extends Controller
     public function edit($id)
     {
         //
-        $review = Review::find($id);
-        $path = url()->previous();
-        return view('pages/update_review_interface')->with('review', $review)->with('path',$path);
+        $auth_id = Auth::user()->id;
+        $follow = Follow::create([
+            'user_id' => $auth_id,
+            'followed_user_id' => $id
+        ]
+        );
+        $follow->save();
+        return redirect(url()->previous());
     }
 
     /**
@@ -73,18 +84,6 @@ class ReviewController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $request->validate([
-            'review' => ['required', 'string', 'min:5']
-    ]);
-    $review = Review::find($id);
-    $review -> rating = $request -> rating;
-    $review -> review = $request -> review;
-    $review -> save();
-    $strid = '#';
-    $strid = $strid.strval($id);
-    $path = $request->destination;
-
-    return redirect($path.$strid);
     }
 
     /**
@@ -96,11 +95,5 @@ class ReviewController extends Controller
     public function destroy($id)
     {
         //
-        $review = Review::find($id);
-        $pid = $review->product_id;
-        $review->users()->detach();
-        $review->delete();
-        return redirect(url("product/$pid"));
-
     }
 }
