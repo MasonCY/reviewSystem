@@ -6,8 +6,14 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Image;
 use App\Models\User;
+use App\Models\Review;
+use Illuminate\Support\Facades\Auth;
 class ProductController extends Controller
 {
+
+    public function __construct() {
+        $this->middleware('auth', ['except'=>['index','show']]);
+        }
     /**
      * Display a listing of the resource.
      *
@@ -16,6 +22,7 @@ class ProductController extends Controller
     public function index()
     {
         //
+    
         // $products = Product::all();
         // $images = Image::groupBy('product_id')->get();
             $products = Product::orderBy('id')->paginate(6);
@@ -36,7 +43,72 @@ class ProductController extends Controller
         //
         return view('pages/phone_add');
     }
+    public function add_review($pid,$uid)
+    {
+        $product = Product ::find($pid);
+        if($uid == -1){
+            return redirect(url("product/$product->id"));
+        }
+       
+        //
+        return view('pages/add_review_interface')->with('pid',$pid)->with('uid',$uid);
+    }
+    public function store_review(Request $request)
+    {
+        $request->validate([
+            'review' => ['required', 'string', 'min:5']
+    ]);
 
+        $user = User::find($request->uid);
+        $product = Product::find($request->pid);
+        $tzobj = new \DateTimeZone('Australia/Brisbane');
+        // $date = date("Y-m-d H:i:s");
+        $dt = new \DateTime("now", $tzobj);
+        $timestamp = time();
+        $dt->setTimestamp($timestamp);
+        $date = $dt->format("Y-m-d H:i:s");
+    
+        $user->products()->attach($product->id,['likes'=>0,'dislikes'=>0,'added_review'=>1,'review'=>$request->review,'rating'=>$request->rating,'create_date'=>$date]);
+       
+        return redirect(url("product/$product->id"));
+  
+    }
+
+    public function store_like($pid, $uid,$rid){
+        $product = Product ::find($pid);
+        if($uid == -1){
+            return redirect(url("product/$product->id"));
+        }
+       
+        $user = User::find($uid);
+        
+        // $user->reviews()->updateExistingPivot($rid,[
+        //           'islike'=>1
+        // ]);
+  
+        $user->reviews()->attach($rid,['islike'=>1]);
+        $review = Review::find($rid);
+        $review->likes = $review->likes + 1;
+        // return redirect(url("product/$product->id"));
+        $strid = '#';
+        $strid = $strid.strval($rid);
+        return redirect(url()->previous().$strid);
+    }
+
+    public function store_dislike($pid, $uid, $rid){
+        $product = Product ::find($pid);
+        if($uid == -1){
+            return redirect(url("product/$product->id"));
+        }
+      
+        $user = User::find($uid);
+        $user->reviews()->attach($rid,['islike'=>0]);
+        $review = Review::find($rid);
+        $review->likes = $review->dislikes + 1;
+        $strid = '#';
+        $strid = $strid.strval($rid);
+        return redirect(url()->previous().$strid);
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -47,14 +119,14 @@ class ProductController extends Controller
     {
         if(empty($request->url)){
             $request->validate([
-                'name' => ['required', 'string', 'max:255'],
+                'name' => ['required', 'string', 'max:255','unique:products'],
                 'price' => 'required|numeric|gt:0',
                 'manufacturer' =>'required |string|max:255',
                 'description' => 'required'
         ]);
     }else{
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255','unique:products'],
             'price' => 'required|numeric|gt:0',
             'manufacturer' =>'required |string|max:255',
             'description' => 'required',
@@ -70,7 +142,7 @@ class ProductController extends Controller
         ]);
         $product->save();
 
-        return redirect("product/$product->id");
+        return redirect(url("product/$product->id"));
 
     }
 
@@ -84,10 +156,25 @@ class ProductController extends Controller
     {
         //
         $product = Product::find($id);
-        $reviews = $product->users()->paginate(5);
+        $reviews = $product->users()->orderBy('created_at','desc')->paginate(5);
         $images = $product->images;
         $users = User::all();
-        // dd($images);
+        if(Auth::check()){
+            $user = User::find(Auth::user()->id);
+            $likes = $user->reviews;
+           
+            $treviews=$product->users;   
+            $nonAddedReview = TRUE;
+            foreach($treviews as $treview){
+                if(Auth::user()->id == $treview->pivot->user_id){
+                    $nonAddedReview = FALSE;
+                    break;
+                }
+            }
+            
+            return view('pages/detail')->with('product',$product)->with('reviews',$reviews)->with('images',$images)->with('users',$users)->with('likes',$likes)->with('nonAddedReview',$nonAddedReview);
+        }
+     
   
         return view('pages/detail')->with('product',$product)->with('reviews',$reviews)->with('images',$images)->with('users',$users);
     }
@@ -118,14 +205,14 @@ class ProductController extends Controller
         //
        if(empty($request->url)){
             $request->validate([
-                'name' => ['required', 'string', 'max:255'],
+                'name' => 'required |string|max:255|unique:products,name'.($id ? ",$id" : ''),
                 'price' => 'required|numeric|gt:0',
                 'manufacturer' =>'required |string|max:255',
                 'description' => 'required'
         ]);
     }else{
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' =>  'required |string|max:255|unique:products,name'.($id ? ",$id" : ''),
             'price' => 'required|numeric|gt:0',
             'manufacturer' =>'required |string|max:255',
             'description' => 'required',
@@ -141,11 +228,7 @@ class ProductController extends Controller
         $product->url = $request->url;
 
         $product->save();
-        $reviews = $product->users()->paginate(5);
-        $images = $product->images;
-        $users = User::all();
-        return view('pages/detail')->with('product',$product)->with('reviews',$reviews)->with('images',$images)->with('users',$users);
-
+        return redirect(url("product/$product->id"));
     }
 
     /**

@@ -153,4 +153,7 @@ a:hover { text-decoration: underline; }
 .right{
     float:right
 }
+textarea{
+    resize:none;
+}
 

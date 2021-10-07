@@ -29,7 +29,7 @@
       </table>
     @else
       <table>
-          <tr><td width="10%">Name: </td><td width="40%"><input type="text" name="name" value="{{ old('name')}}" size = '45'></td><</tr>
+          <tr><td width="10%">Name: </td><td width="40%"><input type="text" name="name" value="{{ old('name')}}" size = '45'></td></tr>
           <tr><td>Price: </td><td><input type="text" name="price" value="{{ old('price')}}"  size = '45'></td></tr>
           <tr><td>Manufactuer: </td><td><input type="text" name="manufacturer" value="{{ old('manufacturer')}}"  size = '45'></td></tr>
           <tr><td>Description: </td><td><input type="text" name="description"   value="{{ old('description')}}"  size = '45'></td></tr>

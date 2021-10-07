@@ -14,6 +14,7 @@ class ProductsTableSeeder extends Seeder
      */
     public function run()
     {
+ 
         //
         DB::table('products')->insert([
                 'name' => 'iPhone 13 Pro Max',
@@ -21,6 +22,14 @@ class ProductsTableSeeder extends Seeder
                 'manufacturer' => 'Apple',
                 'description' => 'Released 2021,September 24, 240g,7.7mm thickness, 1284*2778 pixels(6.7)',
             
+        ]);
+        DB::table('products')->insert([
+            'name' => 'Galaxy S21 5G',
+            'price' => 1248,
+            'manufacturer' => 'Samsung',
+            'description' => 'Released 2020, 169g,7.9mm thickness, 2400 x 1080 pixels(6.2)',
+        
+        
         ]);
         DB::table('products')->insert([
             'name' => 'iPhone 13 Pro',
@@ -76,14 +85,7 @@ class ProductsTableSeeder extends Seeder
         
         
         ]);
-        DB::table('products')->insert([
-            'name' => 'Galaxy S21 5G',
-            'price' => 1248,
-            'manufacturer' => 'Samsung',
-            'description' => 'Released 2020, 169g,7.9mm thickness, 2400 x 1080 pixels(6.2)',
-        
-        
-        ]);
+  
         
        
     }

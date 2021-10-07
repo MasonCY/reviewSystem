@@ -19,37 +19,43 @@ class UsersTableSeeder extends Seeder
             'name'=>'Bob',
             'email'=>'Bob@gmail.com',
             'user_type'=>'Moderator',
-            'password'=>bcrypt('123456'),
+            'password'=>bcrypt('12345678'),
         ]); 
         DB::table('users')->insert([
             'name'=>'Mason',
             'email'=>'Mason@gmail.com',
             'user_type'=>'Member',
-            'password'=>bcrypt('123456'),
+            'password'=>bcrypt('12345678'),
         ]); 
         DB::table('users')->insert([
             'name'=>'Paris',
             'email'=>'Paris@gmail.com',
             'user_type'=>'Member',
-            'password'=>bcrypt('123456'),
+            'password'=>bcrypt('12345678'),
         ]); 
         DB::table('users')->insert([
             'name'=>'Paul',
             'email'=>'Paul@gmail.com',
             'user_type'=>'Member',
-            'password'=>bcrypt('123456'),
+            'password'=>bcrypt('12345678'),
         ]); 
         DB::table('users')->insert([
             'name'=>'Travis',
             'email'=>'Travis@gmail.com',
             'user_type'=>'Member',
-            'password'=>bcrypt('123456'),
+            'password'=>bcrypt('12345678'),
         ]); 
         DB::table('users')->insert([
             'name'=>'Tony',
             'email'=>'Tony@gmail.com',
             'user_type'=>'Member',
-            'password'=>bcrypt('123456'),
+            'password'=>bcrypt('12345678'),
+        ]); 
+        DB::table('users')->insert([
+            'name'=>'Mo',
+            'email'=>'Mo@gmail.com',
+            'user_type'=>'Moderator',
+            'password'=>bcrypt('12345678'),
         ]); 
     }
 }

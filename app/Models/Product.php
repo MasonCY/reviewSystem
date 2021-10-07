@@ -10,7 +10,7 @@ class Product extends Model
     use HasFactory;
     protected $fillable = ['name','price','manufacturer','description','url'];
     function users(){
-        return $this->belongsToMany('App\Models\User','reviews')->withPivot('review')->withPivot('create_date');
+        return $this->belongsToMany('App\Models\User','reviews')->withPivot('id','review','create_date','likes','dislikes','added_review')->withTimestamps();
     }
     function images(){
         return $this->hasMany('App\Models\Image');

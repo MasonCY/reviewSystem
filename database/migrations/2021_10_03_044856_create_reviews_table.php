@@ -17,8 +17,9 @@ class CreateReviewsTable extends Migration
             $table->increments('id');
             $table->integer('user_id');
             $table->integer('product_id');
-            $table->integer('likes')->nullable(false)->change();
-            $table->integer('dislikes')->nullable(false)->change();
+            $table->integer('likes')->nullable();
+            $table->integer('dislikes')->nullable();
+            $table->integer('added_review')->nullable();
             $table->string('review');
             $table->integer('rating');
             $table->string('create_date');
