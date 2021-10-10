@@ -1,4 +1,4 @@
-@extends('layouts/master1')
+@extends('layouts/master')
 @section('title')
   Products
 @endsection
@@ -7,7 +7,7 @@
 @endsection
 
 @section('body')
-    <h4>upload image:</h4>
+  
     <form method="POST" action='{{url("image")}}' enctype="multipart/form-data">
         {{csrf_field()}}
         <!-- <p><label>Name:</label><input type="text" name="name"></p> -->
@@ -16,6 +16,9 @@
         <input type="hidden" name="pid" value={{ $pid }} >
         <input type="hidden" name="uid" value={{ $uid }}>
 
-        <p><input type="submit" value="Upload"> <label>{{$errors->first('name')}}</label></p>
+        <p><input type="submit" value="Upload"> <label>{{$errors->first('image')}}</label></p>
     </form>
+  @section('footer')
+    
+  @endsection
 @endsection

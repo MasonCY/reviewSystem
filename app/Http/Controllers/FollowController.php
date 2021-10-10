@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 class FollowController extends Controller
 {
+    public function __construct() {
+        $this->middleware('auth');
+        }
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +20,11 @@ class FollowController extends Controller
     {
         //
     }
-
+    public function show_reviews($id)
+    {
+        $reviews = User::find($id)->products;
+        return view('pages/show_reviews')->with('reviews',$reviews);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -63,6 +70,9 @@ class FollowController extends Controller
      */
     public function edit($id)
     {
+        if($id == -1){
+            return redirect(url("product/$product->id"));
+        }
         //
         $auth_id = Auth::user()->id;
         $follow = Follow::create([
@@ -95,5 +105,13 @@ class FollowController extends Controller
     public function destroy($id)
     {
         //
+     
+
+    }
+    public function follow_delete($id)
+    {
+        $follow = Follow::find($id);
+        $follow->delete();
+        return redirect(url()->previous());
     }
 }

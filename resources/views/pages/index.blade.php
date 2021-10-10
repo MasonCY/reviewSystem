@@ -1,4 +1,4 @@
-@extends('layouts/master1')
+@extends('layouts/master')
 @section('title')
     products
 @endsection
@@ -22,7 +22,6 @@
 @section('body')
     <div></div>
 
-    <h4 class="home_h4">Products information:</h4>
     <div class="clearfix">
             @foreach($products as $product)
                     <?php $tid=-1;?>

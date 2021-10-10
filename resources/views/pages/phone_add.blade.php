@@ -1,4 +1,4 @@
-@extends('layouts/master1')
+@extends('layouts/master')
 @section('title')
   Products
 @endsection
@@ -14,7 +14,6 @@
 @section('document')
 @endsection
 @section('body')
-<h4>Add a new phone:</h4>
   <form method="post" action="{{url("product")}}">
     {{ csrf_field() }}
     @if($errors->any())
@@ -39,5 +38,7 @@
         </table>
     @endif
 
-
+    @section('footer')
+    
+    @endsection
 @endsection

@@ -1,4 +1,4 @@
-@extends('layouts/master1')
+@extends('layouts/master')
 @section('title')
   Products
 @endsection
@@ -14,7 +14,7 @@
 @section('document')
 @endsection
 @section('body')
-<h4>Add a new review:</h4>
+
   <form method="post" action="{{url("store_review")}}">
     {{ csrf_field() }}
 
@@ -29,9 +29,12 @@
             @endfor
  
         </select></p>
-        <p><label>Review: </label><input type="text" name="review" value="{{old('review')}}"><label></label></p>
+        <p><label>Review: </label><textarea name="review" rows="4" cols="50" >{{old('review')}}</textarea><label>{{$errors->first('review')}}</label></p>
         <input type="hidden" name="pid" value={{ $pid }} >
         <input type="hidden" name="uid" value={{ $uid }}>
         <p><input type="submit" value="Create"></p>
+  @section('footer')
+    
+  @endsection
 
 @endsection

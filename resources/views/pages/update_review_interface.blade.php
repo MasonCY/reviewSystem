@@ -1,4 +1,4 @@
-@extends('layouts/master1')
+@extends('layouts/master')
 @section('title')
   Products
 @endsection
@@ -14,7 +14,6 @@
 @section('document')
 @endsection
 @section('body')
-<h4>Update review:</h4>
   <form method="post" action='{{url("review/$review->id")}}'>
     {{ csrf_field() }}
     {{method_field('PUT')}}
@@ -48,5 +47,7 @@
     @endif
     <input type="hidden" name="destination" value={{$path}}>
         <p><input type="submit" value="Update"></p>
-
+    @section('footer')
+    
+    @endsection    
 @endsection

@@ -7,6 +7,9 @@ use App\Models\Image;
 
 class ImageController extends Controller
 {
+    public function __construct() {
+        $this->middleware('auth', ['except'=>['index','show']]);
+        }
     /**
      * Display a listing of the resource.
      *
@@ -35,6 +38,9 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'image' => ['required']
+        ]);
         $image_store = request()->file('image')->store('products_images','public');
         $image = new Image();
         $image->product_id= $request->pid;

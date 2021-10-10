@@ -1,12 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 use App\Models\Review;
+use App\Models\User;
 
 class ReviewController extends Controller
 {
+    public function __construct() {
+        $this->middleware('auth', ['except'=>['index','show']]);
+        }
     /**
      * Display a listing of the resource.
      *
@@ -15,6 +20,13 @@ class ReviewController extends Controller
     public function index()
     {
         //
+        $user = Auth::user();
+        $likes = $user->reviews;
+        $follows = $user->follows;
+        $users = User::all();
+
+        return view('pages/recommendation')->with('likes',$likes)->with('follows',$follows)->with('users',$users);
+
     }
 
     /**
@@ -57,8 +69,14 @@ class ReviewController extends Controller
      */
     public function edit($id)
     {
-        //
+  
         $review = Review::find($id);
+              // authenticantion check for user type
+        if(Auth::user()->user_type != 'Moderator' and $review->user_id != Auth::user()->id)
+        {
+            return redirect(url()->previous());
+        }
+
         $path = url()->previous();
         return view('pages/update_review_interface')->with('review', $review)->with('path',$path);
     }
@@ -77,6 +95,13 @@ class ReviewController extends Controller
             'review' => ['required', 'string', 'min:5']
     ]);
     $review = Review::find($id);
+
+    if(Auth::user()->user_type != 'Moderator' and $review->user_id != Auth::user()->id)
+    {
+        return redirect(url()->previous());
+    }
+
+
     $review -> rating = $request -> rating;
     $review -> review = $request -> review;
     $review -> save();
@@ -95,8 +120,13 @@ class ReviewController extends Controller
      */
     public function destroy($id)
     {
-        //
         $review = Review::find($id);
+        if(Auth::user()->user_type != 'Moderator' and $review->user_id != Auth::user()->id)
+        {
+            return redirect(url()->previous());
+        }
+        //
+     
         $pid = $review->product_id;
         $review->users()->detach();
         $review->delete();

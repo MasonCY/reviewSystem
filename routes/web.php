@@ -24,10 +24,15 @@ Route::get('add_review/{pid}/{uid}', [ProductController::class, 'add_review']);
 Route::post('store_review', [ProductController::class, 'store_review']);
 Route::get('store_like/{pid}/{uid}/{rid}', [ProductController::class, 'store_like']);
 Route::get('store_dislike/{pid}/{uid}/{rid}', [ProductController::class, 'store_dislike']);
+Route::get('show_reviews/{uid}', [FollowController::class, 'show_reviews']);
+Route::get('follow_delete/{fid}', [FollowController::class, 'follow_delete']);
 Route::get('/', [ProductController::class,'index']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+Route::get('document', function(){
+    return view('pages/document');
+});
 
 require __DIR__.'/auth.php';

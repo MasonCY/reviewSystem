@@ -90,6 +90,7 @@ class ProductController extends Controller
         $user->reviews()->attach($rid,['islike'=>1]);
         $review = Review::find($rid);
         $review->likes = $review->likes + 1;
+        $review->save();
         // return redirect(url("product/$product->id"));
         $strid = '#';
         $strid = $strid.strval($rid);
@@ -105,7 +106,8 @@ class ProductController extends Controller
         $user = User::find($uid);
         $user->reviews()->attach($rid,['islike'=>0]);
         $review = Review::find($rid);
-        $review->likes = $review->dislikes + 1;
+        $review->dislikes = $review->dislikes + 1;
+        $review->save();
         $strid = '#';
         $strid = $strid.strval($rid);
         return redirect(url()->previous().$strid);
@@ -190,7 +192,12 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        // check for the user type
+        if(Auth::user()->user_type != 'Moderator')
+        {
+            return redirect(url()->previous());
+        }
+        
         $product = Product::find($id);
         return view('pages/update_product_interface')->with('product', $product);
 
@@ -205,6 +212,11 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // authentication check for user type
+        if(Auth::user()->user_type != 'Moderator')
+        {
+            return redirect(url()->previous());
+        }
         //
        if(empty($request->url)){
             $request->validate([
@@ -233,6 +245,8 @@ class ProductController extends Controller
         $product->save();
         return redirect(url("product/$product->id"));
     }
+
+
 
     /**
      * Remove the specified resource from storage.

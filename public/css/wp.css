@@ -31,7 +31,7 @@ figcaption.image_link{
 h1 { font-weight: bold; color: #003399; }
 h2 { font-weight: bold; color: #006666; }
 h3 { font-weight: bold; color: #009933; }
-h4 { font-weight: bold; font-style: italic; color: #669900;  margin-left: 64px;}
+h4 { font-weight: bold; font-style: italic; color: blanchedalmond;  margin-left: 64px;}
 h6 { color:gray; font-size: 18px;}
 .member{
     background-color: darkgray;
@@ -67,7 +67,7 @@ input.logout{
 
 table { 
     font-family: Verdana, Arial, Helvetica, sans-serif; 
-    border: 1px solid black; 
+    border: 1px solid blanchedalmond; 
     margin-left: 64px;
     width: 89.9%;
 }
@@ -78,7 +78,7 @@ table {
     margin-left: 64px;
 }
 caption { font-weight: bold; }
-th { font-weight: bold; background-color: blue; color: white; padding: 2px; border: 1px solid black; }
+th {  background-color:blanchedalmond; color:black; padding: 2px; border: 1px solid black; }
 td { padding: 2px; border: 1px solid;}
 /* tr { background-color: white; } */
 
@@ -106,8 +106,8 @@ a:hover { text-decoration: underline; }
 .antispam { display:none;}
 
 #navbar{
-    background-color:#669900;
-    border-color:#009933;
+    background-color:blanchedalmond;
+    border-color:cornsilk;
     border-style: solid;
     padding: 20px
     

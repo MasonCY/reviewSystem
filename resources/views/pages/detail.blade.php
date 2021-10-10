@@ -1,4 +1,4 @@
-@extends('layouts/master1')
+@extends('layouts/master')
 @section('title')
   Products
 @endsection
@@ -14,6 +14,7 @@
 @endauth
 @endsection
 @section('follower')
+  <?php $followed = FALSE;?>
 @auth
   <?php $uid = Auth::user()->id ?> 
  
@@ -33,10 +34,10 @@
 @section('document')
 @endsection
 @section('body')
-<h4>Phone detail:</h4>
+
  
 <table>
-    <tr><th>Name</th><th>Price</th><th>Make</th><th>Description</th><th>Url</th><th>Image</th></tr>
+  
     <tr><td>{{$product->name}}</td> <td> {{$product->price}}</td><td> {{$product->manufacturer}}</td><td> {{$product->description}}</td><td> {{$product->url}}</td>
     @auth
       <td><a href='{{url("add_image/$product->id/$uid")}}'>Upload</a></td>
@@ -58,7 +59,7 @@
       @endforeach
     </div>
        
-  <p class="reviews" style="background-color: blue; color: white;" align='center' > Reivews</p>
+  <p class="reviews" style="background-color: blanchedalmond; color: black;" align='center' > Reivews</p>
 
     @foreach($reviews as $review) 
     <?php $islike = -1; ?>
@@ -66,17 +67,23 @@
     <?php $followed_user_id = $review->pivot->user_id ?>
     <?php $rating = $review->pivot->rating;?>
     <?php $filename ="images/".strval($rating).'.png'?>
+    <?php $numberOfLikes = $review->pivot->likes ?>
+    <?php $numberOfDislikes = $review->pivot->dislikes?>
    
       <p><span class ='left'><a class="navLink" name='{{$ppid}}'>{{$review -> name}}</a> </span> &nbsp;&nbsp;&nbsp;  <img src='{{url("$filename")}}'  style="width:140px;height:20px; margin:0px 20px;">  <span class ='right' >{{$review->pivot->create_date}}</span></p>
-      <p class="dotted" style="background-color: darkgray;" >{{$review -> pivot->review}}</p>
+      @if($numberOfLikes> $numberOfDislikes)
+        <p style="background-color: blanchedalmond;" >{{$review -> pivot->review}}</p>
+      @else
+        <p style="background-color: cornsilk;" >{{$review -> pivot->review}}</p>
+      @endif
       <p>
       @auth
-        
           @foreach($likes as $like)
               @if($like->pivot->review_id == $review->pivot->id and $like->pivot->user_id == $uid) 
                   @if($like->pivot->islike == 0)
                 
                     <?php $islike = 0;?>
+            
                   @else
 
                     <?php $islike = 1;?>
@@ -88,17 +95,31 @@
        
         @if($islike == -1)
 
-          <span class='right'> <a href='{{url("store_like/$product->id/$uid/$ppid")}}'>like</a> <a href='{{url("store_dislike/$product->id/$uid/$ppid")}}' >dislike</a></span>
+          <span class='right'> <a href='{{url("store_like/$product->id/$uid/$ppid")}}'>
+          <img src='{{url("images/upNo.jpeg")}}'  style="width:20px;height:20px;"> 
+          </a>{{$numberOfLikes}} <a href='{{url("store_dislike/$product->id/$uid/$ppid")}}' >
+          <img src='{{url("images/downNo.jpeg")}}'  style="width:20px;height:20px;"> 
+          </a>{{$numberOfDislikes}} </span>
         @else
           @if($islike == 1)
-            <span class='right'><label>I like this post</label></a></span>
+              <span class='right'><a> 
+            <img src='{{url("images/upYes.jpeg")}}'  style="width:20px;height:20px;"> 
+            </a>{{$numberOfLikes}}
+            <a><img src='{{url("images/downNo.jpeg")}}'  style="width:20px;height:20px;"></a> {{$numberOfDislikes}}
+            </span>
           @else
-            <span class='right'><label>I do not like this post</label></a></span>
+            <span class='right'><a> 
+            <img src='{{url("images/upNo.jpeg")}}'  style="width:20px;height:20px;"> 
+            </a>{{$numberOfLikes}}
+            <a><img src='{{url("images/downYes.jpeg")}}'  style="width:20px;height:20px;"></a> {{ $numberOfDislikes}}
+            </span>
           @endif
         @endif
       @else
-         <span class='right'> <a href='{{url("store_like/$product->id/$uid/$ppid")}}'>like</a> <a href='{{url("store_dislike/$product->id/$uid/$ppid")}}'>dislike</a></span>
+         <span class='right'> <a href='{{url("store_like/$product->id/$uid/$ppid")}}'>  <img src='{{url("images/upNo.jpeg")}}'  style="width:20px;height:20px;"> </a> {{$numberOfLikes}}
+         <a href='{{url("store_dislike/$product->id/$uid/$ppid")}}'><img src='{{url("images/downNo.jpeg")}}'  style="width:20px;height:20px;"> </a>{{$numberOfDislikes}} </span>
       @endauth
+      @auth
       @if($review->pivot->user_id != $uid)
           @foreach($follows as $follow)
             <?php $followed = FALSE;?>
@@ -106,16 +127,23 @@
               <?php $followed = TRUE ?>
               @break
             @endif
-          @endforeach()
-        
-        @if($followed == FALSE)
+          @endforeach
+          @if($followed == FALSE)
           <span class = 'left'><a href='{{url("follow/$ppid/edit")}}'>Follow</a>
         @else
-          <span class = 'left'>Followed
+          <span class = 'left'><a href='{{url("follow_delete/$follow->id")}}'>Unfollow</a>
+       
         @endif
+    
       @else
         <span class = 'left'><a href="#"></a>
       @endif
+      @endauth
+      @guest
+        <span class = 'left'><a href='{{url("follow/$ppid/edit")}}'>Follow</a>
+      @endguest
+    
+  
        @auth
         @if(Auth::user()->user_type == 'Moderator')
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='{{url("review/$ppid/edit")}}'>Update</a>
@@ -144,7 +172,7 @@
       <p>APPRECIATE FOR YOUR OPINION</p> 
     @endif
   @else
-     <p><a href='{{url("add_review/$product->id/$uid")}}' name="mypage">POST YOUR OPINION</a></p> 
+     <!-- <p><a href='{{url("add_review/$product->id/$uid")}}' name="mypage">POST YOUR OPINION</a></p>  -->
   @endauth
     <div class="d-flex">
       <div class="mx-auto">

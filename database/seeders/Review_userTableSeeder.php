@@ -15,29 +15,6 @@ class Review_userTableSeeder extends Seeder
     public function run()
     {
         //
-        DB::table('review_user')->insert([
-            'user_id'=>1,
-            'review_id' => 1,
-            
-            'islike'=> 1
-        ]); 
-        DB::table('review_user')->insert([
-            'user_id'=>1,
-            'review_id' => 2,
-            
-            'islike'=> 1
-        ]); 
-        DB::table('review_user')->insert([
-            'user_id'=>1,
-            'review_id' => 3,
-            
-            'islike'=> 0
-        ]); 
-        DB::table('review_user')->insert([
-            'user_id'=>1,
-            'review_id' => 4,
-            
-            'islike'=> 0
-        ]); 
+       
     }
 }
