@@ -24,6 +24,7 @@
             {{csrf_field()}}
             {{method_field('DELETE')}}
             <input type="submit" value="Delete" class='submit'>
+            
         </form>
   @endif
 @else
